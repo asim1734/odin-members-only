@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 async function getAllmessages() {
   const { rows } = await pool.query(
-    'Select * from messages,users where messages.user_id = users.user_id '
+    'Select * from messages,users where messages.user_id = users.id '
   );
   return rows;
 }

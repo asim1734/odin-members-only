@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages</title>
+    <link rel="stylesheet" href="/styles/messages.css">
+</head>
+<body>
+    <div class="container">
+        <h1>All Messages</h1>
+        <ul class="message-list">
+            <% messages.forEach(message => { %>
+                <li class="message">
+                    <strong><%= message.full_name %></strong> (@<%= message.username %>)  
+                    <p><%= message.content %></p>
+                </li>
+            <% }); %>
+        </ul>
+    </div>
+</body>
+</html>
