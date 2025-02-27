@@ -1,7 +1,7 @@
 const pool = require('./pool');
 const bcrypt = require('bcrypt');
 
-async function getAllmessages() {
+async function getAllMessages() {
   const { rows } = await pool.query(
     'Select * from messages,users where messages.user_id = users.id '
   );
@@ -16,12 +16,12 @@ async function getUserWithUserid(userId) {
   return user;
 }
 
-async function insertUser(username, password) {
+async function insertUser(fullName, username, password) {
   const hashedPassword = await bcrypt.hash(password, 10);
-  await pool.query('insert into users (username, password) values ($1, $2)', [
-    username,
-    hashedPassword,
-  ]);
+  await pool.query(
+    'insert into users (full_name, username, password) values ($1, $2, $3)',
+    [fullName, username, hashedPassword]
+  );
 }
 
 async function insertMessage(userId, content) {
@@ -32,7 +32,7 @@ async function insertMessage(userId, content) {
 }
 
 module.exports = {
-  getAllmessages,
+  getAllMessages,
   getUserWithUserid,
   insertUser,
   insertMessage,
