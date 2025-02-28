@@ -8,9 +8,17 @@ async function getAllMessages() {
   return rows;
 }
 
-async function getUserWithUserid(userId) {
+async function getUserByUserid(userId) {
   const { rows } = await pool.query('select * from users where user_id = $1', [
     userId,
+  ]);
+  const user = rows[0];
+  return user;
+}
+
+async function getUserByUsername(username) {
+  const { rows } = await pool.query('select * from users where username = $1', [
+    username,
   ]);
   const user = rows[0];
   return user;
@@ -33,7 +41,8 @@ async function insertMessage(userId, content) {
 
 module.exports = {
   getAllMessages,
-  getUserWithUserid,
+  getUserByUserid,
+  getUserByUsername,
   insertUser,
   insertMessage,
 };

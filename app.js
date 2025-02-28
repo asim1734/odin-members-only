@@ -1,14 +1,24 @@
 const path = require('node:path');
 const express = require('express');
 const bodyParser = require('body-parser');
+const passport = require('./config/passportConfig');
+const session = require('express-session');
+const flash = require('express-flash');
 
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.use(session({ secret: 'cats', resave: false, saveUninitialized: false }));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
 // eslint-disable-next-line no-undef
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+// eslint-disable-next-line no-undef
+app.use(express.static(path.join(__dirname, 'styles')));
 
 const router = require('./routes/mainRouter');
 

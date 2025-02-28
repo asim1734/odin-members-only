@@ -1,4 +1,5 @@
 const model = require('../model/queries');
+const passport = require('../config/passportConfig');
 
 async function displayMessages(req, res) {
   try {
@@ -14,6 +15,18 @@ async function displayRegisterForm(req, res) {
   res.render('register');
 }
 
+async function displayLoginForm(req, res) {
+  res.render('log-in');
+}
+
+async function loginUser(req, res, next) {
+  passport.authenticate('local', {
+    successRedirect: '/messages',
+    failureRedirect: '/log-in',
+    failureFlash: true,
+  })(req, res, next);
+}
+
 async function addNewUser(req, res) {
   try {
     console.log(req.body);
@@ -25,11 +38,13 @@ async function addNewUser(req, res) {
     console.error('Error inserting user:', error);
     res.status(500).send('Internal Server Error');
   }
-  res.redirect('/');
+  res.redirect('/log-in');
 }
 
 module.exports = {
   displayMessages,
   displayRegisterForm,
+  displayLoginForm,
   addNewUser,
+  loginUser,
 };
