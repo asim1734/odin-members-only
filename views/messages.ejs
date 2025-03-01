@@ -8,6 +8,14 @@
 </head>
 <body>
     <div class="container">
+        <% if (user) { %>
+            <p>Welcome, <%= user.username %>!</p>
+            <a href="/log-out">Logout</a>
+        <% } else { %>
+            <a href="/log-in">Login</a> |
+            <a href="/register">Register</a>
+        <% } %>
+        
         <h1>All Messages</h1>
         <ul class="message-list">
             <% messages.forEach(message => { %>

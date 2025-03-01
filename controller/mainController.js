@@ -21,7 +21,7 @@ async function displayLoginForm(req, res) {
 
 async function loginUser(req, res, next) {
   passport.authenticate('local', {
-    successRedirect: '/messages',
+    successRedirect: '/',
     failureRedirect: '/log-in',
     failureFlash: true,
   })(req, res, next);
@@ -41,10 +41,20 @@ async function addNewUser(req, res) {
   res.redirect('/log-in');
 }
 
+async function logUserOut(req, res, next) {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect('/');
+  });
+}
+
 module.exports = {
   displayMessages,
   displayRegisterForm,
   displayLoginForm,
   addNewUser,
   loginUser,
+  logUserOut,
 };

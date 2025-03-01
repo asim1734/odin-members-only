@@ -9,7 +9,7 @@ async function getAllMessages() {
 }
 
 async function getUserByUserid(userId) {
-  const { rows } = await pool.query('select * from users where user_id = $1', [
+  const { rows } = await pool.query('select * from users where id = $1', [
     userId,
   ]);
   const user = rows[0];

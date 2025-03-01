@@ -20,6 +20,11 @@ app.set('view engine', 'ejs');
 // eslint-disable-next-line no-undef
 app.use(express.static(path.join(__dirname, 'styles')));
 
+app.use((req, res, next) => {
+  res.locals.user = req.user;
+  next();
+});
+
 const router = require('./routes/mainRouter');
 
 app.use(router);
