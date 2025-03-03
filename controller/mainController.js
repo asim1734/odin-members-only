@@ -50,6 +50,21 @@ async function logUserOut(req, res, next) {
   });
 }
 
+async function makeUserMember(req, res) {
+  const keyword = req.body.keyword;
+  if (keyword === 'cats') {
+    await model.makeUserMember(req.user.id);
+    res.redirect('/');
+  } else {
+    req.flash('KeywordError', 'Incorrect keyword, please try again.');
+    res.redirect('/new-member');
+  }
+}
+
+async function displayMemberForm(req, res) {
+  res.render('new-member'); // No need to pass error explicitly
+}
+
 module.exports = {
   displayMessages,
   displayRegisterForm,
@@ -57,4 +72,6 @@ module.exports = {
   addNewUser,
   loginUser,
   logUserOut,
+  makeUserMember,
+  displayMemberForm,
 };

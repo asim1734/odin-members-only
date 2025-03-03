@@ -15,13 +15,19 @@
             <a href="/log-in">Login</a> |
             <a href="/register">Register</a>
         <% } %>
+        <% if (user && !user.ismember){ %>
+            <button onclick=" window.location.href = '/new-member'">Do you want to become a member</button>
+         <% } %>
         
         <h1>All Messages</h1>
         <ul class="message-list">
             <% messages.forEach(message => { %>
                 <li class="message">
-                    <strong><%= message.full_name %></strong> (@<%= message.username %>)  
+                    <% if (user && user.ismember) { %>
+                    <strong><%= message.full_name %></strong> (@<%= message.username  %>)
+                    <% } %>
                     <p><%= message.content %></p>
+                    <p class="date"><%= new Date(message.created_at).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %></p>
                 </li>
             <% }); %>
         </ul>

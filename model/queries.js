@@ -39,10 +39,17 @@ async function insertMessage(userId, content) {
   ]);
 }
 
+async function makeUserMember(userId) {
+  await pool.query("update users set ismember = 'true' where id = $1 ", [
+    userId,
+  ]);
+}
+
 module.exports = {
   getAllMessages,
   getUserByUserid,
   getUserByUsername,
   insertUser,
   insertMessage,
+  makeUserMember,
 };

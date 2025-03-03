@@ -10,7 +10,14 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use(session({ secret: 'cats', resave: false, saveUninitialized: false }));
+app.use(
+  session({
+    secret: 'your-secret-key',
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
@@ -22,6 +29,12 @@ app.use(express.static(path.join(__dirname, 'styles')));
 
 app.use((req, res, next) => {
   res.locals.user = req.user;
+  res.locals.messages = req.flash();
+  next();
+});
+
+app.use((req, res, next) => {
+  res.locals.errorText = req.flash('KeywordError')[0] || ''; // First message or empty string
   next();
 });
 
