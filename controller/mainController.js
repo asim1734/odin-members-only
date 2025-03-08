@@ -62,7 +62,17 @@ async function makeUserMember(req, res) {
 }
 
 async function displayMemberForm(req, res) {
-  res.render('new-member'); // No need to pass error explicitly
+  res.render('new-member');
+}
+
+async function displayMessageForm(req, res) {
+  res.render('new-message-form');
+}
+
+async function addNewMessage(req, res) {
+  const content = req.body.content;
+  await model.insertMessage(req.user.id, content);
+  res.redirect('/');
 }
 
 module.exports = {
@@ -74,4 +84,6 @@ module.exports = {
   logUserOut,
   makeUserMember,
   displayMemberForm,
+  displayMessageForm,
+  addNewMessage,
 };

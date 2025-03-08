@@ -15,8 +15,12 @@
             <a href="/log-in">Login</a> |
             <a href="/register">Register</a>
         <% } %>
+        <br>
         <% if (user && !user.ismember){ %>
             <button onclick=" window.location.href = '/new-member'">Do you want to become a member</button>
+         <% } %>
+         <% if (user && user.ismember){ %>
+            <button onclick=" window.location.href = '/new-message'">Do you want to Write a message</button>
          <% } %>
         
         <h1>All Messages</h1>

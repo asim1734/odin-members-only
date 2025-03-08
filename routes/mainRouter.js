@@ -14,4 +14,8 @@ router.get('/log-out', controller.logUserOut);
 
 router.get('/new-member', controller.displayMemberForm);
 router.post('/new-member', controller.makeUserMember);
+
+router.get('/new-message', controller.displayMessageForm);
+router.post('/new-message', controller.addNewMessage);
+
 module.exports = router;
