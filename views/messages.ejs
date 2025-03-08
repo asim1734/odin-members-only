@@ -22,6 +22,9 @@
          <% if (user && user.ismember){ %>
             <button onclick=" window.location.href = '/new-message'">Do you want to Write a message</button>
          <% } %>
+         <% if (user && user.ismember && !user.is_admin){ %>
+            <button onclick=" window.location.href = '/admin-form'">Are you an Admin?</button>
+         <% } %>
         
         <h1>All Messages</h1>
         <ul class="message-list">

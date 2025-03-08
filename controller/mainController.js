@@ -19,7 +19,7 @@ async function displayLoginForm(req, res) {
   res.render('log-in');
 }
 
-async function loginUser(req, res, next) {
+async function logUserIn(req, res, next) {
   passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/log-in',
@@ -75,15 +75,32 @@ async function addNewMessage(req, res) {
   res.redirect('/');
 }
 
+async function displayAdminForm(req, res) {
+  res.render('admin-form');
+}
+
+async function makeUserAdmin(req, res) {
+  const keyword = req.body.keyword;
+  if (keyword === 'dogs') {
+    await model.makeUserAdmin(req.user.id);
+    res.redirect('/');
+  } else {
+    req.flash('KeywordError', 'Incorrect keyword, please try again.');
+    res.redirect('/admin-form');
+  }
+}
+
 module.exports = {
   displayMessages,
   displayRegisterForm,
   displayLoginForm,
-  addNewUser,
-  loginUser,
-  logUserOut,
-  makeUserMember,
   displayMemberForm,
   displayMessageForm,
+  displayAdminForm,
+  addNewUser,
   addNewMessage,
+  logUserIn,
+  logUserOut,
+  makeUserMember,
+  makeUserAdmin,
 };
