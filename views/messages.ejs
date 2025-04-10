@@ -30,11 +30,14 @@
         <ul class="message-list">
             <% messages.forEach(message => { %>
                 <li class="message">
-                    <% if (user && user.ismember) { %>
-                    <strong><%= message.full_name %></strong> (@<%= message.username  %>)
-                    <% } %>
-                    <p><%= message.content %></p>
-                    <p class="date"><%= new Date(message.created_at).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %></p>
+                    <div class="content">
+                        <% if (user && user.ismember) { %>
+                        <strong><%= message.full_name %></strong> (@<%= message.username  %>)
+                        <% } %>
+                        <p><%= message.content %></p>
+                        <p class="date"><%= new Date(message.created_at).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %></p>
+                        
+                    </div>
                 </li>
             <% }); %>
         </ul>

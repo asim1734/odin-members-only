@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 
 app.use(
   session({
-    secret: 'your-secret-key',
+    secret: 'secret-key',
     resave: false,
     saveUninitialized: false,
   })
