@@ -11,34 +11,42 @@ async function displayMessages(req, res) {
   }
 }
 
-async function displayRegisterForm(req, res) {
-  res.render('register');
-}
-
-async function displayLoginForm(req, res) {
-  res.render('log-in');
-}
-
 async function logUserIn(req, res, next) {
-  passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/log-in',
-    failureFlash: true,
+  passport.authenticate('local', (err, user, info) => {
+    if (err) return next(err);
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        error: info?.message || 'Invalid credentials',
+      });
+    }
+
+    req.logIn(user, (err) => {
+      if (err) return next(err);
+      return res.json({ success: true });
+    });
   })(req, res, next);
 }
 
 async function addNewUser(req, res) {
   try {
-    console.log(req.body);
     const { fullName, username, password } = req.body;
-
     await model.insertUser(fullName, username, password);
-    console.log('User inserted');
+    res.json({ success: true });
   } catch (error) {
-    console.error('Error inserting user:', error);
-    res.status(500).send('Internal Server Error');
+    if (error.code === '23505') {
+      // for duplicate username (Postgres)
+      res
+        .status(400)
+        .json({ success: false, error: 'Username already taken.' });
+    } else {
+      res.status(500).json({
+        success: false,
+        error: 'Internal server error. Please try again.',
+      });
+    }
   }
-  res.redirect('/log-in');
 }
 
 async function logUserOut(req, res, next) {
@@ -51,22 +59,14 @@ async function logUserOut(req, res, next) {
 }
 
 async function makeUserMember(req, res) {
-  const keyword = req.body.keyword;
+  const { keyword } = req.body;
   if (keyword === 'cats') {
     await model.makeUserMember(req.user.id);
-    res.redirect('/');
-  } else {
-    req.flash('KeywordError', 'Incorrect keyword, please try again.');
-    res.redirect('/new-member');
+    return res.json({ success: true });
   }
-}
-
-async function displayMemberForm(req, res) {
-  res.render('new-member');
-}
-
-async function displayMessageForm(req, res) {
-  res.render('new-message-form');
+  return res
+    .status(400)
+    .json({ success: false, error: 'Incorrect keyword, please try again.' });
 }
 
 async function addNewMessage(req, res) {
@@ -75,32 +75,42 @@ async function addNewMessage(req, res) {
   res.redirect('/');
 }
 
-async function displayAdminForm(req, res) {
-  res.render('admin-form');
-}
-
 async function makeUserAdmin(req, res) {
-  const keyword = req.body.keyword;
+  const { keyword } = req.body;
   if (keyword === 'dogs') {
     await model.makeUserAdmin(req.user.id);
-    res.redirect('/');
-  } else {
-    req.flash('KeywordError', 'Incorrect keyword, please try again.');
-    res.redirect('/admin-form');
+    return res.json({ success: true });
+  }
+  return res
+    .status(400)
+    .json({ success: false, error: 'Incorrect keyword, please try again.' });
+}
+
+function apiCurrentUser(req, res) {
+  if (!req.user) return res.json({ user: null });
+  const { id, username, full_name, ismember, is_admin } = req.user;
+  res.json({ user: { id, username, full_name, ismember, is_admin } });
+}
+
+async function apiMessages(req, res) {
+  try {
+    const messages = await model.getAllMessages();
+    res.json(messages);
+    // eslint-disable-next-line no-unused-vars
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to load messages' });
   }
 }
 
 module.exports = {
   displayMessages,
-  displayRegisterForm,
-  displayLoginForm,
-  displayMemberForm,
-  displayMessageForm,
-  displayAdminForm,
   addNewUser,
   addNewMessage,
   logUserIn,
   logUserOut,
   makeUserMember,
   makeUserAdmin,
+  // Add API exports here:
+  apiCurrentUser,
+  apiMessages,
 };
