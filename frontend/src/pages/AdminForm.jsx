@@ -12,7 +12,7 @@ function AdminForm() {
     setError('');
     setSuccess('');
     try {
-      const res = await fetch('/admin-form', {
+      const res = await fetch('/admin3-form', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

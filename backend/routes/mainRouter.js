@@ -4,6 +4,7 @@ const router = express.Router();
 
 router.get('/api/current-user', controller.apiCurrentUser);
 router.get('/api/messages', controller.apiMessages);
+router.delete('/api/messages/:id', controller.deleteMessage);
 
 router.post('/register', controller.addNewUser);
 router.post('/log-in', controller.logUserIn);

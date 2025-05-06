@@ -51,6 +51,14 @@ async function makeUserAdmin(userId) {
   ]);
 }
 
+async function deleteMessageById(messageId) {
+  const id = Number(messageId);
+  if (isNaN(id)) throw new Error('Invalid message ID');
+  const result = await pool.query('DELETE FROM messages WHERE id = $1', [id]);
+  console.log('Rows affected (model):', result.rowCount);
+  return result.rowCount;
+}
+
 module.exports = {
   getAllMessages,
   getUserByUserid,
@@ -59,4 +67,5 @@ module.exports = {
   insertMessage,
   makeUserMember,
   makeUserAdmin,
+  deleteMessageById,
 };

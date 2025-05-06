@@ -1,17 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-
-function formatDate(dateStr) {
-  const date = new Date(dateStr);
-  return date.toLocaleString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
+import Message from '../components/Message'; // <-- import here
 
 function Home() {
   const [user, setUser] = useState(null);
@@ -24,11 +13,15 @@ function Home() {
       .then((data) => setUser(data.user))
       .catch(() => setUser(null));
 
+    fetchMessages();
+  }, []);
+
+  function fetchMessages() {
     fetch('/api/messages', { credentials: 'include' })
       .then((res) => res.json())
       .then(setMessages)
       .catch(() => setMessages([]));
-  }, []);
+  }
 
   const handleLogout = async () => {
     await fetch('/log-out', { credentials: 'include' });
@@ -36,9 +29,24 @@ function Home() {
     navigate('/');
   };
 
+  const handleDelete = async (messageId) => {
+    if (!window.confirm('Are you sure you want to delete this message?'))
+      return;
+    const res = await fetch(`/api/messages/${messageId}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    });
+    const data = await res.json();
+    if (data.success) {
+      setMessages((msgs) => msgs.filter((msg) => msg.id !== messageId));
+    } else {
+      alert(data.error || 'Failed to delete message');
+    }
+  };
+
   return (
     <div>
-      {/* Header / Navbar */}
+      {/* ...header and nav (as before)... */}
       <header className="main-header">
         <div className="container header-flex">
           <h1 className="logo" onClick={() => navigate('/')}>
@@ -65,7 +73,6 @@ function Home() {
           </nav>
         </div>
       </header>
-
       <main className="container">
         {/* Membership/Actions */}
         <section style={{ margin: '1.5rem 0' }}>
@@ -88,7 +95,6 @@ function Home() {
             </button>
           )}
         </section>
-
         {/* All messages */}
         <section>
           <h2 style={{ textAlign: 'center', marginBottom: '1rem' }}>
@@ -99,22 +105,12 @@ function Home() {
           ) : (
             <ul className="message-list">
               {messages.map((message) => (
-                <li className="message" key={message.id}>
-                  <div className="content">
-                    <div className="msg-header">
-                      {user?.ismember && (
-                        <>
-                          <strong>{message.full_name}</strong>
-                          <span className="msg-username">
-                            (@{message.username})
-                          </span>
-                        </>
-                      )}
-                    </div>
-                    <p>{message.content}</p>
-                    <p className="date">{formatDate(message.created_at)}</p>
-                  </div>
-                </li>
+                <Message
+                  key={message.id}
+                  message={message}
+                  user={user}
+                  onDelete={handleDelete}
+                />
               ))}
             </ul>
           )}
